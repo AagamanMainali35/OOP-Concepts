@@ -10,8 +10,8 @@ class Animal:# class is blue print of real world objects or things
     def define(self):
         print(f'the animal is of {self.breed}, and its weight is  {self.weight}')
     
-Dog=Animal(12,'Husky') # passing arguments to constructor 
-Dog.define()
+# Dog=Animal(12,'Husky') # passing arguments to constructor 
+# Dog.define()
 
     
         
