@@ -8,7 +8,7 @@ class Cat(Animal): # Cat class inheritance from parent class named Animal
         print(f'The cat meowed')
     
 
-class Dog(Animal): # One parent can have multiple child so cAnimal is inherited by multiple Child 
+class Dog(Animal): # One parent can have multiple child so Animal is inherited by multiple Child 
     def __init__(self):
         pass
     

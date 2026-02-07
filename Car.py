@@ -14,7 +14,7 @@ class fuel():
         print(f'The car will take {time} seconds to Fuel fully at {self.fuel_capacity} liters')
         
     
-        
+    
 class Car(Electric,fuel):
     def __init__(self,Brand,Color,milage,speed,Cruise_control,seat,fuel_capacity):
         self.Brand=Brand
@@ -33,7 +33,7 @@ class Car(Electric,fuel):
         
     def stop(self):
         print('The car stopped')
-    
+   
 Honda=Car('Honda','Green',42,130,True,2,500)
 Honda.Refuel(100)
         
