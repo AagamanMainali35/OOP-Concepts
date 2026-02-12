@@ -1,53 +1,56 @@
-class Electric():
-    Total_charge=0
-    def __init__(self,Chargin_capacity=0):
-        self.Chargin_capacity=Chargin_capacity
-        
-    def charge(self,Time):
-        self.Time=Time
-        print(f'The car will take {self.Time} minutes to charge fully at {self.Chargin_capacity}%')
-        
-class fuel():
-    def __init__(self,fuel_capacity):
-        self.fuel_capacity=fuel_capacity
-        
-    def Refuel(self):
-        print(f'The car  has been Refueled fully at {self.fuel_capacity} liters')
-         
-class Car(Electric,fuel):
-    def __init__(self,Brand,Color,milage,speed,Cruise_control,seat,Car_Type='Fuel',chargin_capacity=0,fuel_capacity=0):
-        self.Brand=Brand
-        self.Color=Color
-        self.milage=milage
-        self.speed=speed
-        self.Cruise_control=Cruise_control
-        self.seat=seat
-        self.car_type=Car_Type
-        
-        if self.car_type.lower()=='fuel':
-            fuel.__init__(self,fuel_capacity)
-        elif self.car_type.lower()=='electric':
-            Electric.__init__(self,chargin_capacity)
-        else:            
-            raise ValueError('Car Type can only be Elcetric or Fuel')
-             
-try:
-    Car_Type=input(' What is the Car type ? : ')
-    question=''
-    Time=''
-    if Car_Type.lower()=='fuel':
-        question=' What is the current fuel level ? '
-        Fuel_level=input(question) 
-        Honda=Car('Honda','Green',42,130,True,2,Car_Type,fuel_capacity=Fuel_level)
-        Honda.Refuel()  
-    elif Car_Type.lower()=='electric':
-        question=' whats is the Time to fully charge the vehicle ? '  
-        Time=input(question)  
-        Honda=Car('Honda','Green',42,130,True,2,Car_Type,100)
-        Honda.charge(Time) 
-    else:  
-        raise ValueError(' Car type can only be Electric or Fuel ')
-except ValueError as e:
-    print(e)
-        
-    
+from abc import ABC, abstractmethod
+
+# Abstract Engine class
+class Engine(ABC):
+    @abstractmethod
+    def operate(self):
+        pass
+
+
+# Electric engine
+class Electric(Engine):
+    def __init__(self, charging_capacity):
+        self.charging_capacity = charging_capacity
+
+    def operate(self):
+        print(f'The car is charging at {self.charging_capacity}%')
+
+
+# Fuel engine
+class Fuel(Engine):
+    def __init__(self, fuel_capacity):
+        self.fuel_capacity = fuel_capacity
+
+    def operate(self):
+        print(f'The car has been refueled fully at {self.fuel_capacity} liters')
+
+
+# Car class
+class Car:
+    def __init__(self, brand, color, mileage, speed, cruise_control, seats, engine: Engine):
+        self.brand = brand
+        self.color = color
+        self.mileage = mileage
+        self.speed = speed
+        self.cruise_control = cruise_control
+        self.seats = seats
+        self.engine = engine
+
+    def operate_engine(self):
+        self.engine.operate()
+
+
+# Example usage
+car_type = input("What is the car type? (fuel/electric): ").lower()
+
+if car_type == 'fuel':
+    fuel_level = int(input("What is the current fuel level? "))
+    engine = Fuel(fuel_level)
+elif car_type == 'electric':
+    charge_capacity = int(input("What is the charging capacity? "))
+    engine = Electric(charge_capacity)
+else:
+    raise ValueError("Car type can only be Fuel or Electric")
+
+honda = Car("Honda", "Green", 42, 130, True, 2, engine)
+honda.operate_engine()
