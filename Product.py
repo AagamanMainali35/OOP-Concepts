@@ -7,7 +7,7 @@ class Product(): # Creted base calss witha  variables
         
 class DiscountedProduct(Product): # inherited the parent class 
     def __init__(self,name,price,discount): # added parameters to run main parent class constructor
-        Product.__init__(self,name,price)   # called main parent class constructor and intialized argumets 
+        super().__init__(self,name,price)   # called main parent class constructor and intialized argumets 
         self.discount=discount
         self.Discountedprice=self.price- int( self.price * self.discount/100 )
         
