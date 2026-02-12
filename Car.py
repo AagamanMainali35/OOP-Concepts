@@ -25,11 +25,10 @@ class Fuel(Engine):
         print(f'The car has been refueled fully at {self.fuel_capacity} liters')
 
 
-# Car class
 class Car:
-    def __init__(self, brand, color, mileage, speed, cruise_control, seats, engine: Engine):
+    def __init__(self, brand, color, mileage, speed, cruise_control, seats, engine: Engine): # Type hinting in this line ?
         self.brand = brand
-        self.color = color
+        self.color = color 
         self.mileage = mileage
         self.speed = speed
         self.cruise_control = cruise_control
@@ -40,7 +39,6 @@ class Car:
         self.engine.operate()
 
 
-# Example usage
 car_type = input("What is the car type? (fuel/electric): ").lower()
 
 if car_type == 'fuel':
@@ -54,3 +52,6 @@ else:
 
 honda = Car("Honda", "Green", 42, 130, True, 2, engine)
 honda.operate_engine()
+
+
+
