@@ -20,10 +20,14 @@ class Account(ABC):
 class savings(Account):
     def __init__(self,SavingBalnace):
         super().__init__()
+        self.SI=0
+        self.time=1
+        self.rate=10
         self.SavingBalnace=SavingBalnace
         
     def claculate_intrest(self):
-        self.SI = (self.SavingBalnace * self.rate * self.time) / 100
+        self.SI = int((self.SavingBalnace * self.rate * self.time) / 100)
+        print(f'The intrest is {self.SI}$ p/a')
         
     def show_intrest(self):
         print(f'Interest added: {self.SI}')
@@ -35,10 +39,6 @@ class savings(Account):
     def Withdraw(self,Amounttaken):
         self.SavingBalnace-=Amounttaken
         print('Sucessfuly withdrawn from saving account')
-        
-    def transfer(self,TransferAmount):
-        self.balance+= self.SavingBalnace + TransferAmount
-        print(f'Transferred {TransferAmount}$ to Checking Account')
         
     def showbalance(self):
         print(f'The Saving account balance is: {self.SavingBalnace}')
@@ -66,12 +66,13 @@ class AccountService():
     def Transfer(from_acc,to_acc,Amount):
         from_acc.Withdraw(Amount)
         to_acc.add_balance(Amount) 
-        print(f'Transferred {Amount}$ from {from_acc} to {to_acc}')       
+        print(f'Transferred {Amount}$ sucessfull')       
         
 saving=savings(5000)
 Check=Checking(10000)
 saving.add_balance(1000)
 saving.Withdraw(5000)
+saving.claculate_intrest()
 saving.showbalance()
 Check.showbalance()
 Check.add_balance(700)
