@@ -38,39 +38,26 @@ class Library:
 
 library = Library("MyLibrary")
 # NOTE: For testing purpose only
-# library.booklist.extend([
-#     Book("B1", "Atomic Habits", "James Clear", 5),
-#     Book("B2", "Clean Code", "Robert C. Martin", 3),
-#     Book("B3", "The Alchemist", "Paulo Coelho", 4),
-#     Book("B4", "Deep Work", "Cal Newport", 6),
-#     Book("B5", "Rich Dad Poor Dad", "Robert Kiyosaki", 2),
-#     Book("B6", "Thinking, Fast and Slow", "Daniel Kahneman", 4),
-#     Book("B7", "The Pragmatic Programmer", "Andrew Hunt", 3),
-#     Book("B8", "Sapiens", "Yuval Noah Harari", 5),
-#     Book("B9", "1984", "George Orwell", 2),
-#     Book("B10", "The Power of Habit", "Charles Duhigg", 4),
-#     Book("B11", "Meditations", "Marcus Aurelius", 3),
-#     Book("B12", "The Lean Startup", "Eric Ries", 4),
-#     Book("B13", "How to Win Friends and Influence People", "Dale Carnegie", 2),
-#     Book("B14", "The Subtle Art of Not Giving a F*ck", "Mark Manson", 3),
-#     Book("B15", "Principles", "Ray Dalio", 5)
-# ])
-
-
-
-
-def quit_program():
-    print("Thanks for coming!")
-    exit()
+library.booklist.extend([
+    Book("B1", "Atomic Habits", "James Clear", 5),
+    Book("B2", "Clean Code", "Robert C. Martin", 3),
+    Book("B3", "The Alchemist", "Paulo Coelho", 4),
+    Book("B4", "Deep Work", "Cal Newport", 6),
+    Book("B5", "Rich Dad Poor Dad", "Robert Kiyosaki", 2),
+    Book("B6", "Thinking, Fast and Slow", "Daniel Kahneman", 4),
+    Book("B7", "The Pragmatic Programmer", "Andrew Hunt", 3),
+    Book("B8", "Sapiens", "Yuval Noah Harari", 5),
+    Book("B9", "1984", "George Orwell", 2),
+    Book("B10", "The Power of Habit", "Charles Duhigg", 4),
+    Book("B11", "Meditations", "Marcus Aurelius", 3),
+    Book("B12", "The Lean Startup", "Eric Ries", 4),
+    Book("B13", "How to Win Friends and Influence People", "Dale Carnegie", 2),
+    Book("B14", "The Subtle Art of Not Giving a F*ck", "Mark Manson", 3),
+    Book("B15", "Principles", "Ray Dalio", 5)
+])
 
 
 def main():
-    menu = {
-        "1": library.add_book,
-        "2": library.list_books,
-        "3": quit_program
-    }
-
     while True:
         print("\n===== Library Menu =====")
         print("1. Add Book")
@@ -78,10 +65,13 @@ def main():
         print("3. Quit")
 
         choice = input("Enter your choice: ")
-
-        action = menu.get(choice)
-        if action:
-            action()
+        if choice == "1":
+            library.add_book()
+        elif choice == "2":
+            library.list_books()
+        elif choice == "3":
+            print("Thanks for coming!")
+            break
         else:
             print("Invalid choice. Try again.")
 
