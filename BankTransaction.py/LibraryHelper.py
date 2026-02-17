@@ -10,7 +10,7 @@ for name in names:
     library.register(name)
 
 library.booklist.extend([
-    Book("B1", "Atomic Habits", "James Clear", 5),
+    Book("B1", "Atomic Habits", "James Clear", 0),
     Book("B2", "Clean Code", "Robert C. Martin", 3),
     Book("B3", "The Alchemist", "Paulo Coelho", 4),
     Book("B4", "Deep Work", "Cal Newport", 6),
@@ -63,3 +63,4 @@ library.list_books()
 library.list_members()
 library.borrow_Book()
 library.show_borrower_list()
+library.list_books()

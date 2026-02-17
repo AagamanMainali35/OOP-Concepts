@@ -60,17 +60,48 @@ class Library:
         book_id = input("Enter Book ID: ")
         member_id = input("Enter Member ID: ")
         borrowing_days = int(input("Enter Borrowing Time in Days: "))
-        borrowing_ID="".join(random.choices(string.ascii_letters+string.digits,k=9))
-        borrowed_time = datetime.now()  
-        returning_time = borrowed_time + timedelta(days=borrowing_days) 
-        self.borrower_list[borrowing_ID] = {
-            "book_id": book_id,
-            "member_id": member_id,
-            "BorrowedTime": borrowed_time.strftime("%Y-%m-%d %H:%M:%S"),
-            "ReturningTime": returning_time.strftime("%Y-%m-%d %H:%M:%S")
-        }
+        book_found = None
+        member_found = None
+
+        for i in self.booklist:
+            if book_id == i.BookID:
+                book_found = i
+                break
         
+
+        for j in self.member_list:
+            if member_id == j.ID:
+                member_found = j
+                break
+
+        if not book_found and not member_found:
+            print("Invalid Book ID and Member ID provided.")
+        elif not book_found:
+            print("Invalid Book ID provided.")
+        elif book_found.Copies < 1:
+            print('Not Enough Copies of the book please try again later')
+        elif not member_found:
+            print("Invalid Member ID provided.")
+        else:
+            book_found.Copies-=1
+            borrowing_ID = "".join(random.choices(string.ascii_letters + string.digits, k=9))
+            borrowed_time = datetime.now()
+            returning_time = borrowed_time + timedelta(days=borrowing_days)
+            self.borrower_list[borrowing_ID] = {
+                "book_id": book_id,
+                "member_id": member_id,
+                "BorrowedTime": borrowed_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "ReturningTime": returning_time.strftime("%Y-%m-%d %H:%M:%S")
+            }
+
+            print("Book borrowed successfully.")
+
     def show_borrower_list(self):
         print(self.borrower_list)
+        
+    def return_book():
+        # borrowing_ID=input('Enter BorrowingID : ')
+        pass
+        
     
 
