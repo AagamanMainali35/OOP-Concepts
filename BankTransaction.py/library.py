@@ -1,7 +1,7 @@
 import random
 import string
 from datetime import datetime , timedelta
-class Memeber:
+class Member:
     def __init__(self,FullName,ID):
         self.FullName=FullName
         self.ID=ID
@@ -23,7 +23,9 @@ class Library:
     def register(self,Fullname,id=None):
         if id is None:
             id="".join(random.choices(string.ascii_letters+string.digits,k=9))
-        self.member_list.append(Memeber(FullName=Fullname,ID=id))
+        self.member_list.append(Member(FullName=Fullname,ID=id))
+        print(f"Member {Fullname} registered with ID: {id}")
+
         
     def list_members(self):
         print("-"*35)
@@ -33,10 +35,9 @@ class Library:
             print(f'{index+1:<5}{persons.ID:<15}{persons.FullName}')
             
     def add_book(self):
-        book_ID = print("".join(random.choices(string.ascii_letters+string.digits,k=9)))
+        book_ID = "".join(random.choices(string.ascii_letters+string.digits,k=9))
         book_title = input("Enter book title: ")
         book_author = input("Enter book author: ")
-
         try:
             book_copies = int(input("Enter book copies amount: "))
         except ValueError:
@@ -51,10 +52,10 @@ class Library:
             print("No books available.")
             return
         else:
-            print(f'{"SN":<3} {"Book Name":<32} {"Author Name":<30} {"Available_Copies"}')
+            print(f'{"SN":<15} {"Book Name":<20} {"Author Name":<25} {"Copies"}')
             print("-" * 75)
             for i, b in enumerate(self.booklist, 1):
-                print(f"{b.BookID:<4} {b.Title[:20]+"...":<30}  {b.Author:<30} {b.Copies}")
+                print(f"{b.BookID:<15} {b.Title[:12]+"...":<20}  {b.Author:<25} {b.Copies}")
               
     def borrow_Book(self):
         book_id = input("Enter Book ID: ")
@@ -99,9 +100,25 @@ class Library:
     def show_borrower_list(self):
         print(self.borrower_list)
         
-    def return_book():
-        # borrowing_ID=input('Enter BorrowingID : ')
-        pass
+    def return_book(self):
+        Borowwer_ID = input('Enter Your BorowwerId : ')
+        Delete = False
         
-    
-
+        for key, value in self.borrower_list.items():
+            if key == Borowwer_ID:
+                Delete=True
+                returning_time = datetime.strptime(value['ReturningTime'], "%Y-%m-%d %H:%M:%S")
+                bookId = value['book_id']
+                for i in self.booklist:
+                    if i.BookID == bookId:
+                        i.Copies += 1
+                        Delete = True
+                        print('Thanks for Reading !')
+                        break  
+               
+                if datetime.now() > returning_time:
+                    print('Fine worth 25$ has been initiated')
+        if Delete:
+            self.borrower_list.pop(Borowwer_ID)
+        else: 
+            print('Invalid Borrower ID provided')
