@@ -122,3 +122,44 @@ class Library:
             self.borrower_list.pop(Borowwer_ID)
         else: 
             print('Invalid Borrower ID provided')
+
+
+
+library = Library("MyLibrary")
+
+def main():
+    while True:
+        print("\n===== Library Menu =====")
+        print("1. Register as a member")
+        print("2. List all member")
+        print("3. Add Book")
+        print("4. Show Available Books")
+        print("5. Borrow a Book")
+        print("6. Show Borrowed Books ")
+        print("7. Return Book")
+        print("8. Quit")
+
+        choice = input("Enter your choice: ")
+        if choice=="1":
+            name=input('Enter Your Full Name : ')
+            library.register(name)
+            print('Memeber registration sucessfull')
+        elif choice=="2":
+            library.list_members()
+        elif choice == "3":
+            library.add_book()
+        elif choice == "4":
+            library.list_books()
+        elif choice=="5":
+            library.borrow_Book()
+        elif choice=="6":
+            library.show_borrower_list()
+        elif choice == "7":
+            library.return_book()
+        elif choice == "8":
+            print("Thanks for coming!")
+            break
+        else:
+            print("Invalid choice. Try again.")
+            
+main()
