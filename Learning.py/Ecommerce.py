@@ -31,26 +31,6 @@ class Product(ABC):
     @abstractmethod
     def details():
         pass
-    
-# class DB:
-#     def __init__(self):
-#         self.Proddatabase={}
-#         self.userDatabase={}
-        
-        
-#     def add_product(self,product:Product):
-#         self.database[product.id]=product
-    
-#     def show_products(self):
-#         for key,data in self.database.items():
-#             print(key,data)
-    
-#     def get_product(self,id):
-#         pass
-    
-#     def remove(product,id):
-#         pass
-
 
 class DB:
     def __init__(self):
@@ -63,8 +43,12 @@ class DB:
         print(f"Product '{product.name}' added with ID: {product.id}")
 
     def show_products(self):
-        for key,data in self.database.items():
-            print(key,data)
+        if not self.productDatabase:
+            print("No products in database.")
+            return
+        print("\nAvailable Products:")
+        for prod in self.productDatabase.values():
+            print(f"{prod.id} - {prod.name} - ${prod.get_price()}")
        
     def get_product(self, prod_id):
         return self.productDatabase.get(prod_id, None)
@@ -174,9 +158,6 @@ class Checkout():
 class Order():
     pass
 
-s = Subscription("S1", "Netflix Plan", 3)
-p1 = Physical("P1", "Custom Printer", 1430, 7)
-p1 = Physical("P1", "Custom Printer", 1430, 7)
 
 db=DB()
 while True:
@@ -188,14 +169,59 @@ while True:
     print("5 Show Cart")
     print("6 Checkout")
     print("7 Exit")
-    option=input('Enter Your option : ')
-    if option.lower().strip()=="1":
-        name=input('Enter Name : ')
-        id=input('Enter ID : ')
-        u=User(id,name)
+
+    option = input('Enter Your option: ').lower().strip()
+
+    if option == "1":
+        name = input('Enter Name: ')
+        id = input('Enter ID: ')
+        u = User(id, name)
         db.add_user(u)
         db.show_users()
-    break
+
+    elif option == "2":
+        product_id = input("Enter Product ID: ")
+        product_name = input("Enter Product Name: ")
+        product_price=int(input("Enter the product Price: "))
+        product_type = input("Enter Product Type Physical(p), Digital(d) or Subscription(s) : ").lower().strip()
+
+        if product_type.lower().strip()=="digital" or product_type.lower().strip()=="d":
+            file_size = float(input("Enter File size in mb: "))
+            d=Digital(product_id,product_name,product_price,file_size)
+            db.add_product(d)
+        elif product_type.lower().strip()=="physical" or product_type.lower().strip()=="p":
+            product_weight = float(input("Enter Product Weight in kg: "))
+            p=Physical(product_id,product_name,product_price,product_weight)
+            db.add_product(p)
+
+        elif product_type.lower().strip()=="subcription" or product_type.lower().strip()=="s'":
+            Months = float(input("Enter subscription period in months:"))
+            p=Physical(product_id,product_name,product_price,product_weight)
+            db.add_product(p)
+        else: 
+            print('Invalid Product Type')
+
+    elif option == "3":
+        db.show_products()
+
+    elif option == "4":
+        # Add Product to Cart
+        pass
+
+    elif option == "5":
+        # Show Cart
+        pass
+
+    elif option == "6":
+        # Checkout
+        pass
+
+    elif option == "7":
+        print("Exiting...")
+        break
+
+    else:
+        print("Invalid option! Please try again.")
         
         
     
