@@ -62,13 +62,46 @@ class Physical(Product):
         print("-"*40)
         print(f"Total Price    : ${self.get_price()}")
         print("="*40 + "\n")
-        
+   
 class Digital(Product):
-    pass
+    def __init__(self, id, name, price, file_size):
+        self.size = file_size  
+        super().__init__(id, name, price)  
+
+    def get_price(self):
+        return self.price  
+
+    def details(self):
+        print("\n" + "="*40)
+        print("Digital Product Bill")
+        print("="*40)
+        print(f"Product ID     : {self.id}")
+        print(f"Product Name   : {self.name}")
+        print(f"Price          : ${self.price}")
+        print(f"File Size      : {self.size} MB")
+        print("-"*40)
+        print(f"Total Price    : ${self.get_price()}")
+        print("="*40 + "\n")     
 
 class Subscription(Product):
-    pass
+    def __init__(self, id, name, months):
+        self.Monthlyprice=900
+        price=self.Monthlyprice*months
+        super().__init__(id, name, price)
 
+    def get_price(self):
+        return self.price
+    
+    def details(self):
+        print("\n" + "="*40)
+        print("Subscription Product Bill")
+        print("="*40)
+        print(f"Product ID     : {self.id}")
+        print(f"Product Name   : {self.name}")
+        print(f"Monthly Price  : {self.Monthlyprice} ")
+        print(f"Price          : ${self.price}")
+        print("="*40 + "\n")
+        
 class Cart():
     pass
 
@@ -79,6 +112,5 @@ class Order():
     pass
 
 
-p1=Physical('A5N','Custom Printer' , 1000 , 7)
-p1.details()
-
+s = Subscription("S1", "Netflix Plan", 3)
+s.details()
