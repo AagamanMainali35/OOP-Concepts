@@ -3,7 +3,7 @@ class User:
     def __init__(self,id,name):
         self.id=id
         self.name=name
-        self._balance=0
+        self._balance=10000
     
     @property
     def balance(self):
@@ -12,7 +12,8 @@ class User:
     @balance.setter
     def set_balance(self,new_balance):
         if new_balance<0:
-            print('Balnace cant be less Than 0 ')
+            print('Balace cant be less Than 0 ')
+            return None
         self._balance=new_balance
             
 class Product(ABC):
@@ -156,18 +157,19 @@ class Cart():
     def add_item(self,user_id,product_id,quantity):
         user=db.get_user(user_id)
         product=db.get_product(product_id)
-        total+=product.price * int(quantity)
-        print(total)
-        print(user.balance)
+        total = product.price * int(quantity)
         if product is None or user is None:
            print('Invalid UserID or product ID provided')
-        if user_id not in self.cart_Items:
-            self.cart_Items[user_id] = {}
-        if product_id in self.cart_Items[user_id]:
-            self.cart_Items[user_id][product_id] += quantity
+        if total > user.balance:
+            raise ValueError('Insufficient Balance')
         else:
-            self.cart_Items[user_id][product_id] = quantity
-        
+            if user_id not in self.cart_Items:
+                self.cart_Items[user_id] = {}
+            if product_id in self.cart_Items[user_id]:
+                self.cart_Items[user_id][product_id] += quantity
+            else:
+                self.cart_Items[user_id][product_id] = quantity
+            
     def clearcart(self,user_id):    
         try:
             del self.cart_Items[user_id]
@@ -256,11 +258,15 @@ while True:
         while True:
             product_id = input("Enter Product ID: ").strip()
             quantity = int(input("Enter Product quantity: "))
-            c.add_item(user_id, product_id, quantity)
-            more = input("Add more Product?(yes/no) ")
-            if more.lower().strip() == "no":
+            try:
+                c.add_item(user_id, product_id, quantity)
+                more = input("Add more Product?(yes/no) ")
+                if more.lower().strip() == "no":
+                    break
+            except Exception as e:
+                print(e)
                 break
-            
+                
     elif option == "5":
         c.ListItems()
         
