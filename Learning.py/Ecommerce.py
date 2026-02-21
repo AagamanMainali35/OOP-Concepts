@@ -1,7 +1,7 @@
 from abc import ABC,abstractmethod
-
-class user:
-    def __int__(self,id,name):
+   
+class User:
+    def __init__(self,id,name):
         self.id=id
         self.name=name
         self._balance=0
@@ -31,6 +31,69 @@ class Product(ABC):
     @abstractmethod
     def details():
         pass
+    
+# class DB:
+#     def __init__(self):
+#         self.Proddatabase={}
+#         self.userDatabase={}
+        
+        
+#     def add_product(self,product:Product):
+#         self.database[product.id]=product
+    
+#     def show_products(self):
+#         for key,data in self.database.items():
+#             print(key,data)
+    
+#     def get_product(self,id):
+#         pass
+    
+#     def remove(product,id):
+#         pass
+
+
+class DB:
+    def __init__(self):
+        self.productDatabase = {}  
+        self.userDatabase = {}     
+
+    # ---------------- Products ----------------
+    def add_product(self, product):
+        self.productDatabase[product.id] = product
+        print(f"Product '{product.name}' added with ID: {product.id}")
+
+    def show_products(self):
+        for key,data in self.database.items():
+            print(key,data)
+       
+    def get_product(self, prod_id):
+        return self.productDatabase.get(prod_id, None)
+
+    def remove_product(self, prod_id):
+        if prod_id in self.productDatabase:
+            removed = self.productDatabase.pop(prod_id)
+            print(f"Product '{removed.name}' removed from database.")
+        else:
+            print("Product ID not found.")
+
+    # ---------------- Users ----------------
+    def add_user(self, user):
+        self.userDatabase[user.id] = user
+        print(f"User '{user.name}' added with ID: {user.id}")
+
+    def show_users(self):
+        for value in self.userDatabase.values():
+            print(value)
+
+    def get_user(self, user_id):
+        return self.userDatabase.get(user_id, None)
+
+    def remove_user(self, user_id):
+        if user_id in self.userDatabase:
+            removed = self.userDatabase.pop(user_id)
+            print(f"User '{removed.name}' removed from database.")
+        else:
+            print("User ID not found.")
     
 class Physical(Product):
     def __init__(self, id, name, Baseprice, weight):
@@ -111,6 +174,28 @@ class Checkout():
 class Order():
     pass
 
-
 s = Subscription("S1", "Netflix Plan", 3)
-s.details()
+p1 = Physical("P1", "Custom Printer", 1430, 7)
+p1 = Physical("P1", "Custom Printer", 1430, 7)
+
+db=DB()
+while True:
+    print("\n===== MENU =====")
+    print("1 Add User")
+    print("2 Add Product")
+    print("3 Show Products")
+    print("4 Add Product to Cart")
+    print("5 Show Cart")
+    print("6 Checkout")
+    print("7 Exit")
+    option=input('Enter Your option : ')
+    if option.lower().strip()=="1":
+        name=input('Enter Name : ')
+        id=input('Enter ID : ')
+        u=User(id,name)
+        db.add_user(u)
+        db.show_users()
+    break
+        
+        
+    
