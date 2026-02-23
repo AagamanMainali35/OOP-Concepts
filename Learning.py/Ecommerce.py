@@ -150,7 +150,64 @@ class Subscription(Product):
         print("="*40 + "\n")
         
 class Cart():
-    pass
+    def __init__(self):
+        self.cart_Items = {}
+        self.cart_total = {}
+        
+    def add_item(self, user_id, product_id, quantity):
+        user = db.get_user(user_id)
+        product = db.get_product(product_id)
+        
+        if product is None or user is None:
+            print('Invalid UserID or product ID provided')
+            return
+        
+        if user_id not in self.cart_Items:
+            self.cart_Items[user_id] = {}
+            self.cart_total[user_id] = 0
+
+        if product_id in self.cart_Items[user_id]:
+            self.cart_Items[user_id][product_id] += quantity
+            self.cart_total[user_id] += product.price * quantity
+        else:
+            self.cart_Items[user_id][product_id] = quantity
+            self.cart_total[user_id] += product.price * quantity
+           
+    def showbill(self, user_id):
+        user = db.get_user(user_id)
+
+        if user is None:
+            print("Invalid User ID")
+            return
+
+        if user_id not in self.cart_Items or not self.cart_Items[user_id]:
+            print("Cart is empty")
+            return
+
+        print("\n------ BILL ------")
+
+        for product_id, quantity in self.cart_Items[user_id].items():
+            product = db.get_product(product_id)
+            price = product.price
+            subtotal = price * quantity
+            print(f"{product.name} | Qty: {quantity} | Price: {price} | Subtotal: {subtotal}")
+
+        print("------------------")
+        print(f"TOTAL = {self.cart_total[user_id]}")
+        
+    def clearcart(self, user_id):
+        if user_id in self.cart_Items:
+            del self.cart_Items[user_id]
+        if user_id in self.cart_total:
+            del self.cart_total[user_id]
+                    
+    def get_total(self, user_id):
+        if user_id not in self.cart_total:
+            return 0
+        return self.cart_total[user_id]
+
+# Add after db initialization:
+c = Cart()
 
 class Checkout():
     pass
