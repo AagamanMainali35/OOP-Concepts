@@ -311,8 +311,23 @@ while True:
         db.show_products()
 
     elif option == "4":
-        # Add Product to Cart
-        pass
+        user_id = input("Enter User ID: ").strip()
+        while True:
+            product_id = input("Enter Product ID: ").strip()
+            quantity = int(input("Enter Product quantity: "))
+            
+            if quantity <= 0:
+                print('❌ Quantity must be positive!')
+                continue
+                
+            try:
+                c.add_item(user_id, product_id, quantity)
+                more = input("Add more Product? (yes/no): ")
+                if more.lower().strip() == "no":
+                    break
+            except Exception as e:
+                print(e)
+                break
 
     elif option == "5":
         # Show Cart
