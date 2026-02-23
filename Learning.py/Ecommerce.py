@@ -1,4 +1,7 @@
 from abc import ABC,abstractmethod
+from datetime import datetime
+import string
+import random
 class User:
     def __init__(self,id,name):
         self.id=id
@@ -213,7 +216,22 @@ class Checkout():
     pass
 
 class Order():
-    pass
+    def __init__(self, user: User, Total_Amount):
+        self.order_id = "".join(random.choices(string.ascii_letters + string.digits, k=9))
+        self.customer = user
+        self.Billtotal = Total_Amount
+        self.dateProcessed = datetime.now().strftime("%Y%m%d%H%M%S")
+        print(f"✅ ORDER SUCCESSFUL!")
+        print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print(f"Order ID      : {self.order_id}")
+        print(f"Customer      : {self.customer.name}")
+        print(f"Total Amount  : ${self.Billtotal:.2f}")
+        print(f"Date/Time     : {self.dateProcessed}")
+        print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print(f"Thank you for your order, {self.customer.name}!")
+        
+    def __str__(self):
+        return f'Order of {self.customer.name} made on {self.dateProcessed}'
 
 
 db=DB()
@@ -255,7 +273,7 @@ while True:
             months = float(input("Enter subscription period in months: "))
             s = Subscription(product_id, product_name, months)  # Create Subscription, not Physical
             db.add_product(s)
-        else: 
+        else:
             print('Invalid Product Type')
 
     elif option == "3":
