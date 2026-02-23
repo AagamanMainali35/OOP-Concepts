@@ -251,10 +251,10 @@ while True:
             p=Physical(product_id,product_name,product_price,product_weight)
             db.add_product(p)
 
-        elif product_type.lower().strip()=="subcription" or product_type.lower().strip()=="s'":
-            Months = float(input("Enter subscription period in months:"))
-            p=Physical(product_id,product_name,product_price,product_weight)
-            db.add_product(p)
+        elif product_type.lower().strip() in ["subscription", "s"]:  # Fixed spelling
+            months = float(input("Enter subscription period in months: "))
+            s = Subscription(product_id, product_name, months)  # Create Subscription, not Physical
+            db.add_product(s)
         else: 
             print('Invalid Product Type')
 
