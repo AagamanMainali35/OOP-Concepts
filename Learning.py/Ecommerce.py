@@ -319,9 +319,14 @@ while True:
         pass
 
     elif option == "6":
-        # Checkout
-        pass
-
+        user_id = input("Enter Your User_ID : ")
+        ch = Checkout(user_id)
+        result = ch.process()
+        if result:
+            c.clearcart(user_id)
+            print(" Checkout successful - cart cleared")
+        else:
+            print(" Checkout failed - cart preserved")
     elif option == "7":
         print("Exiting...")
         break
