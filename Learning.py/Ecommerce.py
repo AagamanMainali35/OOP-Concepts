@@ -37,8 +37,10 @@ class Product(ABC):
 
 class DB:
     def __init__(self):
-        self.productDatabase = {}  
-        self.userDatabase = {}     
+        self.productDatabase = {}
+        self.userDatabase = {}
+        self.orderDatabase = {}  # Added
+
 
     # ---------------- Products ----------------
     def add_product(self, product):
@@ -81,6 +83,11 @@ class DB:
             print(f"User '{removed.name}' removed from database.")
         else:
             print("User ID not found.")
+            
+    # ---------------- Orders ----------------
+    def add_order(self, order):
+        self.orderDatabase[order.order_id] = order
+        print(f"Order #{order.order_id} added for user: {order.customer.name}")
     
 class Physical(Product):
     def __init__(self, id, name, Baseprice, weight):
@@ -213,7 +220,29 @@ class Cart():
 c = Cart()
 
 class Checkout():
-    pass
+    def __init__(self, user_id):
+        self.user = db.get_user(user_id)
+        self.Cart_total = c.get_total(user_id) if self.user else 0
+        
+    def process(self):
+        if not self.user:
+            print('❌ User not found!')
+            return False
+        
+        if self.Cart_total <= 0:
+            print('❌ Your cart is empty!')
+            return False
+        
+        if self.user.balance < self.Cart_total:
+            print(f'❌ Insufficient funds! Balance: ${self.user.balance:.2f}, Needed: ${self.Cart_total:.2f}')
+            return False
+
+        print('✅ Processing items...')
+        self.user.balance -= self.Cart_total
+        print('📄 Creating Order Bill...')
+        order_instance = Order(self.user, self.Cart_total)
+        db.add_order(order_instance)
+        return True
 
 class Order():
     def __init__(self, user: User, Total_Amount):
