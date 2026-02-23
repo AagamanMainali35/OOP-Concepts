@@ -88,6 +88,23 @@ class DB:
     def add_order(self, order):
         self.orderDatabase[order.order_id] = order
         print(f"Order #{order.order_id} added for user: {order.customer.name}")
+        
+    def show_orders(self):
+        if not self.orderDatabase:
+            print("No orders in database.")
+            return
+        
+        print("\n" + "="*70)
+        print("📋 ORDERS LIST")
+        print("="*70)
+        print(f"{'ORDER ID':<15} {'CUSTOMER':<20} {'TOTAL':<15} {'DATE':<20}")
+        print("-"*70)
+        
+        for order in self.orderDatabase.values():
+            print(f"{order.order_id:<15} {order.customer.name:<20} ${order.Billtotal:<14.2f} {order.dateProcessed:<20}")
+        
+        print("="*70)
+        print(f"Total Orders: {len(self.orderDatabase)}")
     
 class Physical(Product):
     def __init__(self, id, name, Baseprice, weight):
