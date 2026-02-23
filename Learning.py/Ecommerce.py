@@ -3,19 +3,19 @@ class User:
     def __init__(self,id,name):
         self.id=id
         self.name=name
-        self._balance=10000
+        self._balance=0
     
     @property
     def balance(self):
         return self._balance
     
     @balance.setter
-    def set_balance(self,new_balance):
-        if new_balance<0:
-            print('Balace cant be less Than 0 ')
-            return None
-        self._balance=new_balance
-            
+    def balance(self, new_balance):  # Changed from set_balance to balance
+        if new_balance < 0:
+            print('Balance cannot be less than 0')  # Fixed spelling
+            return
+        self._balance = new_balance
+                  
 class Product(ABC):
     def __init__(self,id,name,price):
         self.id=id
@@ -150,37 +150,8 @@ class Subscription(Product):
         print("="*40 + "\n")
         
 class Cart():
-    def __init__(self):
-        self.cart_Items={}
-        self.cart_total=0
-        
-    def add_item(self,user_id,product_id,quantity):
-        user=db.get_user(user_id)
-        product=db.get_product(product_id)
-        total = product.price * int(quantity)
-        if product is None or user is None:
-           print('Invalid UserID or product ID provided')
-        if total > user.balance:
-            raise ValueError('Insufficient Balance')
-        else:
-            if user_id not in self.cart_Items:
-                self.cart_Items[user_id] = {}
-            if product_id in self.cart_Items[user_id]:
-                self.cart_Items[user_id][product_id] += quantity
-            else:
-                self.cart_Items[user_id][product_id] = quantity
-            
-    def clearcart(self,user_id):    
-        try:
-            del self.cart_Items[user_id]
-        except Exception as e:
-            print(e)
-    
-    def ListItems(self):
-        print(self.cart_Items)
+    pass
 
-        
-    
 class Checkout():
     pass
 
@@ -189,25 +160,6 @@ class Order():
 
 
 db=DB()
-c = Cart()
-
-db.add_user(User("U101","Aagaman"))
-db.add_user(User("U102","Ram"))
-db.add_user(User("U103","Sita"))
-db.add_user(User("U104","Hari"))
-db.add_user(User("U105","Gita"))
-db.add_product(Physical("P101","Laptop",1200,5))
-db.add_product(Physical("P102","Keyboard",50,1))
-db.add_product(Physical("P103","Monitor",300,4))
-db.add_product(Physical("P104","Chair",200,7))
-db.add_product(Digital("D101","Python Course",50,200))
-db.add_product(Digital("D102","Django Course",70,300))
-db.add_product(Digital("D103","React Course",60,250))
-db.add_product(Subscription("S101","Netflix Plan",3))
-db.add_product(Subscription("S102","Gym Membership",6))
-db.add_product(Subscription("S103","Cloud Storage",12))
-
-
 while True:
     print("\n===== MENU =====")
     print("1 Add User")
@@ -215,9 +167,8 @@ while True:
     print("3 Show Products")
     print("4 Add Product to Cart")
     print("5 Show Cart")
-    print("6 Clear Cart")
-    print("7 Checkout")
-    print(" Exit")
+    print("6 Checkout")
+    print("7 Exit")
 
     option = input('Enter Your option: ').lower().strip()
 
@@ -254,36 +205,20 @@ while True:
         db.show_products()
 
     elif option == "4":
-        user_id = input("Enter User ID: ").strip()
-        while True:
-            product_id = input("Enter Product ID: ").strip()
-            quantity = int(input("Enter Product quantity: "))
-            try:
-                c.add_item(user_id, product_id, quantity)
-                more = input("Add more Product?(yes/no) ")
-                if more.lower().strip() == "no":
-                    break
-            except Exception as e:
-                print(e)
-                break
-                
+        # Add Product to Cart
+        pass
+
     elif option == "5":
-        c.ListItems()
-        
+        # Show Cart
+        pass
+
     elif option == "6":
-        id=input('Insert Your userID : ')
-        c.clearcart(id)
-    
-    elif option == "7":
         # Checkout
         pass
 
-    elif option == "8":
+    elif option == "7":
         print("Exiting...")
         break
 
     else:
         print("Invalid option! Please try again.")
-        
-        
-    
