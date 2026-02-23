@@ -163,13 +163,13 @@ class Cart():
     def __init__(self):
         self.cart_Items = {}
         self.cart_total = {}
-        
+    
     def add_item(self, user_id, product_id, quantity):
         user = db.get_user(user_id)
         product = db.get_product(product_id)
         
         if product is None or user is None:
-            print('Invalid UserID or product ID provided')
+            print(' Invalid UserID or Product ID provided')
             return
         
         if user_id not in self.cart_Items:
@@ -179,10 +179,12 @@ class Cart():
         if product_id in self.cart_Items[user_id]:
             self.cart_Items[user_id][product_id] += quantity
             self.cart_total[user_id] += product.price * quantity
+            print(f" Added {quantity} more {product.name} to cart")
         else:
             self.cart_Items[user_id][product_id] = quantity
             self.cart_total[user_id] += product.price * quantity
-           
+            print(f" Added {quantity} x {product.name} to cart")    
+          
     def showbill(self, user_id):
         user = db.get_user(user_id)
 
@@ -226,20 +228,20 @@ class Checkout():
         
     def process(self):
         if not self.user:
-            print('❌ User not found!')
+            print('User not found!')
             return False
         
         if self.Cart_total <= 0:
-            print('❌ Your cart is empty!')
+            print(' Your cart is empty!')
             return False
         
         if self.user.balance < self.Cart_total:
-            print(f'❌ Insufficient funds! Balance: ${self.user.balance:.2f}, Needed: ${self.Cart_total:.2f}')
+            print(f' Insufficient funds! Balance: ${self.user.balance:.2f}, Needed: ${self.Cart_total:.2f}')
             return False
 
-        print('✅ Processing items...')
+        print(' Processing items...')
         self.user.balance -= self.Cart_total
-        print('📄 Creating Order Bill...')
+        print(' Creating Order Bill...')
         order_instance = Order(self.user, self.Cart_total)
         db.add_order(order_instance)
         return True
