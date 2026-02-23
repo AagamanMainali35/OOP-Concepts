@@ -1,24 +1,25 @@
 from abc import ABC,abstractmethod
 from datetime import datetime
-import string
+import string 
 import random
+
 class User:
     def __init__(self,id,name):
         self.id=id
         self.name=name
-        self._balance=0
+        self._balance=1
     
     @property
     def balance(self):
         return self._balance
     
     @balance.setter
-    def balance(self, new_balance):  # Changed from set_balance to balance
-        if new_balance < 0:
-            print('Balance cannot be less than 0')  # Fixed spelling
-            return
-        self._balance = new_balance
-                  
+    def balance(self,new_balance):
+        if new_balance<0:
+            print('Balance cant be less Than 0 ')
+            return None
+        self._balance=new_balance
+            
 class Product(ABC):
     def __init__(self,id,name,price):
         self.id=id
@@ -37,10 +38,9 @@ class Product(ABC):
 
 class DB:
     def __init__(self):
-        self.productDatabase = {}
-        self.userDatabase = {}
-        self.orderDatabase = {}  # Added
-
+        self.productDatabase = {}  
+        self.userDatabase = {}   
+        self.orderDatabase = {}    # Changed from orderlsits to orderDatabase for consistency
 
     # ---------------- Products ----------------
     def add_product(self, product):
@@ -83,29 +83,20 @@ class DB:
             print(f"User '{removed.name}' removed from database.")
         else:
             print("User ID not found.")
-            
-    # ---------------- Orders ----------------
+
+    # ---------------- Orders (storing full objects) ----------------
     def add_order(self, order):
-        self.orderDatabase[order.order_id] = order
-        print(f"Order #{order.order_id} added for user: {order.customer.name}")
+        self.orderDatabase[order.order_id] = order 
+        print(f"Order #{order.order_id} added for user: {order.user.name}")
         
     def show_orders(self):
         if not self.orderDatabase:
             print("No orders in database.")
             return
-        
-        print("\n" + "="*70)
-        print("📋 ORDERS LIST")
-        print("="*70)
-        print(f"{'ORDER ID':<15} {'CUSTOMER':<20} {'TOTAL':<15} {'DATE':<20}")
-        print("-"*70)
-        
+        print("\nAll Orders:")
         for order in self.orderDatabase.values():
-            print(f"{order.order_id:<15} {order.customer.name:<20} ${order.Billtotal:<14.2f} {order.dateProcessed:<20}")
-        
-        print("="*70)
-        print(f"Total Orders: {len(self.orderDatabase)}")
-    
+            print(f"Order #{order.order_id} - User: {order.user.name} - Total: ${order.Billtotal}")
+                     
 class Physical(Product):
     def __init__(self, id, name, Baseprice, weight):
         self.weight = weight
@@ -178,31 +169,31 @@ class Subscription(Product):
         
 class Cart():
     def __init__(self):
-        self.cart_Items = {}
-        self.cart_total = {}
-    
-    def add_item(self, user_id, product_id, quantity):
-        user = db.get_user(user_id)
-        product = db.get_product(product_id)
+        self.cart_Items={}
+        self.cart_total={}
         
+    def add_item(self,user_id,product_id,quantity):
+        user=db.get_user(user_id)
+        product=db.get_product(product_id)
         if product is None or user is None:
-            print(' Invalid UserID or Product ID provided')
-            return
-        
-        if user_id not in self.cart_Items:
-            self.cart_Items[user_id] = {}
-            self.cart_total[user_id] = 0
-
-        if product_id in self.cart_Items[user_id]:
-            self.cart_Items[user_id][product_id] += quantity
-            self.cart_total[user_id] += product.price * quantity
-            print(f" Added {quantity} more {product.name} to cart")
+           print('Invalid UserID or product ID provided')
         else:
-            self.cart_Items[user_id][product_id] = quantity
-            self.cart_total[user_id] += product.price * quantity
-            print(f" Added {quantity} x {product.name} to cart")    
+            if user_id not in self.cart_Items:
+                self.cart_Items[user_id] = {}
+                self.cart_total[user_id]=0
+
+            if product_id in self.cart_Items[user_id]:
+                self.cart_Items[user_id][product_id] += quantity
+                self.cart_total[user_id] += product.price*quantity
+                print(f"✅ Added {quantity} more {product.name} to cart")  
+
+            else:
+                self.cart_Items[user_id][product_id] = quantity
+                self.cart_total[user_id] += product.price * quantity  
+                print(f"✅ Added {quantity} x {product.name} to cart") 
           
-    def showbill(self, user_id):
+               
+    def showbill(self,user_id):
         user = db.get_user(user_id)
 
         if user is None:
@@ -226,49 +217,23 @@ class Cart():
         
     def clearcart(self, user_id):
         if user_id in self.cart_Items:
-            del self.cart_Items[user_id]
+            del self.cart_Items[user_id]    
         if user_id in self.cart_total:
             del self.cart_total[user_id]
+        print(f"✅ Cart cleared for user {user_id}")
                     
-    def get_total(self, user_id):
+    def get_total(self,user_id):
         if user_id not in self.cart_total:
-            return 0
-        return self.cart_total[user_id]
-
-# Add after db initialization:
-c = Cart()
-
-class Checkout():
-    def __init__(self, user_id):
-        self.user = db.get_user(user_id)
-        self.Cart_total = c.get_total(user_id) if self.user else 0
-        
-    def process(self):
-        if not self.user:
-            print('User not found!')
-            return False
-        
-        if self.Cart_total <= 0:
-            print(' Your cart is empty!')
-            return False
-        
-        if self.user.balance < self.Cart_total:
-            print(f' Insufficient funds! Balance: ${self.user.balance:.2f}, Needed: ${self.Cart_total:.2f}')
-            return False
-
-        print(' Processing items...')
-        self.user.balance -= self.Cart_total
-        print(' Creating Order Bill...')
-        order_instance = Order(self.user, self.Cart_total)
-        db.add_order(order_instance)
-        return True
+            print('Invalid User Id provided')
+        else:
+            return self.cart_total[user_id]
 
 class Order():
-    def __init__(self, user: User, Total_Amount):
-        self.order_id = "".join(random.choices(string.ascii_letters + string.digits, k=9))
-        self.customer = user
-        self.Billtotal = Total_Amount
-        self.dateProcessed = datetime.now().strftime("%Y%m%d%H%M%S")
+    def __init__(self,user:User,Total_Amount):
+        self.order_id="".join(random.choices(string.ascii_letters+string.digits,k=9))
+        self.customer=user
+        self.Billtotal=Total_Amount
+        self.dateProcessed=datetime.now().strftime("%Y%m%d%H%M%S")
         print(f"✅ ORDER SUCCESSFUL!")
         print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         print(f"Order ID      : {self.order_id}")
@@ -280,9 +245,36 @@ class Order():
         
     def __str__(self):
         return f'Order of {self.customer.name} made on {self.dateProcessed}'
+    
+class Checkout():
+    def __init__(self,user_id):
+        self.Cart_total=c.get_total(user_id)
+        self.user=db.get_user(user_id)
+        
+    def process(self):
+        if not self.user:
+            print(' User not found!')
+            return False
+            
+        if self.user.balance < self.Cart_total :
+            print(f'❌ Insufficient funds! Balance: ${self.user.balance}, Needed: ${self.Cart_total}')
+            return False
+            
+        if self.Cart_total is None or self.Cart_total <= 0:
+            print('Your cart is empty!')
+            return False
 
-
+        print('processing items .....')  
+        Newamount=self.user.balance-self.Cart_total
+        self.user.balance=Newamount 
+        print('Creating Order Bill....')
+        order_instance=Order(self.user,self.Cart_total)
+        db.add_order(order_instance)
+        return True
+          
 db=DB()
+c = Cart()
+
 while True:
     print("\n===== MENU =====")
     print("1 Add User")
@@ -290,19 +282,20 @@ while True:
     print("3 Show Products")
     print("4 Add Product to Cart")
     print("5 Show Cart")
-    print("6 Checkout")
-    print("7 Exit")
+    print("6 Clear Cart")
+    print("7 Checkout")
+    print("8 Exit")
 
     option = input('Enter Your option: ').lower().strip()
 
-    if option == "1":
+    if option == "1": # Add new member 
         name = input('Enter Name: ')
         id = input('Enter ID: ')
         u = User(id, name)
         db.add_user(u)
         db.show_users()
 
-    elif option == "2":
+    elif option == "2": # Add a new product
         product_id = input("Enter Product ID: ")
         product_name = input("Enter Product Name: ")
         product_price=int(input("Enter the product Price: "))
@@ -311,55 +304,58 @@ while True:
         if product_type.lower().strip()=="digital" or product_type.lower().strip()=="d":
             file_size = float(input("Enter File size in mb: "))
             d=Digital(product_id,product_name,product_price,file_size)
-            db.add_product(d)
+            db.add_product(d)   
         elif product_type.lower().strip()=="physical" or product_type.lower().strip()=="p":
             product_weight = float(input("Enter Product Weight in kg: "))
             p=Physical(product_id,product_name,product_price,product_weight)
             db.add_product(p)
 
-        elif product_type.lower().strip() in ["subscription", "s"]:  # Fixed spelling
-            months = float(input("Enter subscription period in months: "))
-            s = Subscription(product_id, product_name, months)  # Create Subscription, not Physical
+        elif product_type.lower().strip()=="subscription" or product_type.lower().strip()=="s":
+            Months = float(input("Enter subscription period in months:"))
+            s = Subscription(product_id, product_name, Months)
             db.add_product(s)
-        else:
+        else: 
             print('Invalid Product Type')
 
-    elif option == "3":
+    elif option == "3": # list all products
         db.show_products()
 
-    elif option == "4":
+    elif option == "4": # Add to cart
         user_id = input("Enter User ID: ").strip()
         while True:
             product_id = input("Enter Product ID: ").strip()
             quantity = int(input("Enter Product quantity: "))
-            
             if quantity <= 0:
-                print('❌ Quantity must be positive!')
+                print(' Quantity must be positive!')
                 continue
-                
             try:
                 c.add_item(user_id, product_id, quantity)
-                more = input("Add more Product? (yes/no): ")
+                more = input("Add more Product?(yes/no) ")
                 if more.lower().strip() == "no":
                     break
             except Exception as e:
                 print(e)
                 break
-
-    elif option == "5":
-        # Show Cart
-        pass
-
-    elif option == "6":
-        user_id = input("Enter Your User_ID : ")
-        ch = Checkout(user_id)
-        result = ch.process()
-        if result:
+    
+    elif option == "5" :  # show user Bill
+        user_id = input("Enter User ID: ").strip()
+        c.showbill(user_id) 
+        
+    elif option == "6": # Clear User Cart
+        id=input('Insert Your userID : ')
+        c.clearcart(id)
+    
+    elif option == "7":  # Checkout
+       user_id=input("Enter Your User_ID : ")
+       ch=Checkout(user_id)
+       result=ch.process()
+       if result: 
             c.clearcart(user_id)
-            print(" Checkout successful - cart cleared")
-        else:
-            print(" Checkout failed - cart preserved")
-    elif option == "7":
+       else:
+            print(" Checkout failed - 404 Error")
+        
+
+    elif option == "8":
         print("Exiting...")
         break
 
